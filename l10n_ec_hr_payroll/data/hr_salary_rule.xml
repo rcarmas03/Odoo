@@ -1,0 +1,342 @@
+<odoo>
+    <data noupdate="1">
+
+        <record id="your_module_rule_salario" model="hr.salary.rule">
+            <field name="code">BASIC</field>
+            <field name="name">Salario</field>
+            <field name="category_id" ref="l10n_ec_hr_payroll.rule_cat_APOR"/>
+            <field name="sequence">1</field>
+            <field name="appears_on_payslip">True</field>
+            <field name="condition_select">none</field>
+            <field name="amount_select">code</field>
+            <field name="amount_python_compute">total_days_worked = 0
+total_working_days = 0
+if worked_days.WORK100:             
+    total_days_worked = worked_days.WORK100.number_of_days
+                
+if worked_days.OUT:
+    total_working_days = total_days_worked  + worked_days.OUT.number_of_days
+else:
+    total_working_days = total_days_worked
+                
+if total_days_worked &lt; total_working_days:
+    result =  (contract.wage/30) *  total_days_worked  
+else:
+    result =  contract.wage</field>
+            <field name="struct_id" ref="struct_id_base"/>
+        </record>        
+
+        <record id="your_module_rule_hextra" model="hr.salary.rule">
+            <field name="code">HEXT</field>
+            <field name="name">Horas Extra</field>
+            <field name="category_id" ref="l10n_ec_hr_payroll.rule_cat_APOR"/>
+            <field name="sequence">2</field>
+            <field name="appears_on_payslip">True</field>
+            <field name="condition_select">python</field>
+            <field name="condition_python">result = inputs.HEXT</field>
+            <field name="amount_select">code</field>
+            <field name="amount_python_compute">result = inputs.HEXT.amount
+result_name = inputs.HEXT.name</field>
+            <field name="struct_id" ref="struct_id_base"/>
+        </record>
+
+        <record id="your_module_rule_hsupl" model="hr.salary.rule">
+            <field name="code">HSUP</field>
+            <field name="name">Horas Suplementarias</field>
+            <field name="category_id" ref="l10n_ec_hr_payroll.rule_cat_APOR"/>
+            <field name="sequence">3</field>
+            <field name="appears_on_payslip">True</field>
+            <field name="condition_select">python</field>
+            <field name="condition_python">result = inputs.HSUP</field>
+            <field name="amount_select">code</field>
+            <field name="amount_python_compute">result = inputs.HSUP.amount
+result_name = inputs.HSUP.name</field>
+            <field name="struct_id" ref="struct_id_base"/>
+        </record>
+        
+        <record id="your_module_rule_comision" model="hr.salary.rule">
+            <field name="code">COMS</field>
+            <field name="name">Comisiones</field>
+            <field name="category_id" ref="l10n_ec_hr_payroll.rule_cat_APOR"/>
+            <field name="sequence">4</field>
+            <field name="appears_on_payslip">True</field>
+            <field name="condition_select">python</field>
+            <field name="condition_python">result = inputs.COMS</field>
+            <field name="amount_select">code</field>
+            <field name="amount_python_compute">result = inputs.COMS.amount
+result_name = inputs.COMS.name</field>
+            <field name="struct_id" ref="struct_id_base"/>
+        </record>
+
+        <record id="your_module_rule_inde" model="hr.salary.rule">
+            <field name="code">INDM</field>
+            <field name="name">Indemnizaciones</field>
+            <field name="category_id" ref="l10n_ec_hr_payroll.rule_cat_NOAPOR"/>
+            <field name="sequence">5</field>
+            <field name="appears_on_payslip">False</field>
+            <field name="condition_select">python</field>
+            <field name="condition_python">result = inputs.INDM</field>
+            <field name="amount_select">code</field>
+            <field name="amount_python_compute">result = (inputs.INDM.amount)
+result_name = inputs.INDM.name</field>
+            <field name="struct_id" ref="struct_id_base"/>
+        </record>
+
+        <record id="your_module_rule_movil" model="hr.salary.rule">
+            <field name="code">MOVIL</field>
+            <field name="name">Movilización</field>
+            <field name="category_id" ref="l10n_ec_hr_payroll.rule_cat_APOR"/>
+            <field name="sequence">6</field>
+            <field name="appears_on_payslip">True</field>
+            <field name="condition_select">python</field>
+            <field name="condition_python">result = inputs.MOVI</field>
+            <field name="amount_select">code</field>
+            <field name="amount_python_compute">result = (inputs.MOVI.amount)
+result_name = inputs.MOVI.name</field>
+            <field name="struct_id" ref="struct_id_base"/>
+        </record>
+
+        <record id="your_module_rule_net" model="hr.salary.rule">
+            <field name="code">NET</field>
+            <field name="name">Salario Neto</field>
+            <field name="category_id" ref="hr_payroll.NET"/>
+            <field name="sequence">200</field>
+            <field name="appears_on_payslip">True</field>
+            <field name="condition_select">none</field>
+            <field name="amount_select">code</field>
+            <field name="amount_python_compute">result = categories.APBL + categories.NAPBL  + categories.DESC + categories.IESSPER + categories.DED</field>
+            <field name="struct_id" ref="struct_id_base"/>
+        </record>
+
+        <record id="your_module_rule_dec13" model="hr.salary.rule">
+            <field name="code">DEC13</field>
+            <field name="name">Décimo Tercero</field>
+            <field name="category_id" ref="l10n_ec_hr_payroll.rule_cat_NOAPOR"/>
+            <field name="sequence">200</field>
+            <field name="appears_on_payslip">True</field>
+            <field name="condition_select">python</field>
+            <field name="condition_python">if employee.payment_thirteenth_salary == True:
+    result = True</field>
+            <field name="amount_select">code</field>
+            <field name="amount_python_compute">total_days_worked = 0
+total_working_days = 0
+                
+if worked_days.WORK100:
+    total_days_worked = worked_days.WORK100.number_of_days
+                
+if worked_days.OUT:
+    total_working_days = total_days_worked  + worked_days.OUT.number_of_days
+else:
+    total_working_days = total_days_worked
+                
+if total_days_worked &lt; total_working_days:
+    result =  (categories.APBL/12/30) *  total_days_worked  
+else:
+    result =  (categories.APBL/12/30)</field>
+            <field name="struct_id" ref="struct_id_base"/>
+        </record>
+
+        <record id="your_module_rule_provdec13" model="hr.salary.rule">
+            <field name="code">PDEC13</field>
+            <field name="name">Provisión Décimo Tercero</field>
+            <field name="category_id" ref="l10n_ec_hr_payroll.rule_cat_PROV"/>
+            <field name="sequence">200</field>
+            <field name="appears_on_payslip">False</field>
+            <field name="condition_select">python</field>
+            <field name="condition_python">if employee.payment_thirteenth_salary == False:
+    result = True</field>
+            <field name="amount_select">code</field>
+            <field name="amount_python_compute">total_days_worked = 0
+total_working_days = 0
+                
+if worked_days.WORK100:
+    total_days_worked = worked_days.WORK100.number_of_days
+                
+if worked_days.OUT:
+    total_working_days = total_days_worked  + worked_days.OUT.number_of_days
+else:
+    total_working_days = total_days_worked
+                
+if total_days_worked &lt; total_working_days:
+    result =  (categories.APBL/12/30) *  total_days_worked  
+else:
+    result =  (categories.APBL/12/30)</field>
+            <field name="struct_id" ref="struct_id_base"/>
+        </record>
+
+        <record id="your_module_rule_dec14" model="hr.salary.rule">
+            <field name="code">DEC14</field>
+            <field name="name">Décimo Cuarto</field>
+            <field name="category_id" ref="l10n_ec_hr_payroll.rule_cat_NOAPOR"/>
+            <field name="sequence">201</field>
+            <field name="appears_on_payslip">True</field>
+            <field name="condition_select">python</field>
+            <field name="condition_python">if employee.payment_fourteenth_salary == True: 
+    result = True</field>
+            <field name="amount_select">code</field>
+            <field name="amount_python_compute">total_days_worked = 0
+total_working_days = 0
+                
+if worked_days.WORK100:
+    total_days_worked = worked_days.WORK100.number_of_days
+                
+if worked_days.OUT:
+    total_working_days = total_days_worked  + worked_days.OUT.number_of_days
+else:
+    total_working_days = total_days_worked
+                
+if total_days_worked &lt; total_working_days:
+    result =  (450/12/30) *  total_days_worked  
+else:
+    result =  (450/12/30)</field>
+            <field name="struct_id" ref="struct_id_base"/>
+        </record>
+
+        <record id="your_module_rule_prov_dec14" model="hr.salary.rule">
+            <field name="code">PDEC14</field>
+            <field name="name">Provisión Decimo Cuarto</field>
+            <field name="category_id" ref="l10n_ec_hr_payroll.rule_cat_PROV"/>
+            <field name="sequence">201</field>
+            <field name="appears_on_payslip">False</field>
+            <field name="condition_select">python</field>
+            <field name="condition_python">if employee.payment_fourteenth_salary == False: 
+    result = True</field>
+            <field name="amount_select">code</field>
+            <field name="amount_python_compute">total_days_worked = 0
+total_working_days = 0
+                
+if worked_days.WORK100:
+    total_days_worked = worked_days.WORK100.number_of_days
+                
+if worked_days.OUT:
+    total_working_days = total_days_worked  + worked_days.OUT.number_of_days
+else:
+    total_working_days = total_days_worked
+                
+if total_days_worked &lt; total_working_days:
+    result =  (450/12/30) *  total_days_worked  
+else:
+    result =  (450/12/30)</field>
+            <field name="struct_id" ref="struct_id_base"/>
+        </record>
+
+        <record id="your_module_rule_ingresos" model="hr.salary.rule">
+            <field name="code">INGRESOS</field>
+            <field name="name">Total Ingresos</field>
+            <field name="category_id" ref="hr_payroll.NET"/>
+            <field name="sequence">250</field>
+            <field name="appears_on_payslip">True</field>
+            <field name="condition_select">none</field>
+            <field name="amount_select">code</field>
+            <field name="amount_python_compute">result = categories.INGS</field>
+            <field name="struct_id" ref="struct_id_base"/>
+        </record>
+
+        <record id="your_module_rule_presqui" model="hr.salary.rule">
+            <field name="code">PQUI</field>
+            <field name="name">Préstamos Quirografarios</field>
+            <field name="category_id" ref="l10n_ec_hr_payroll.rule_cat_DESC"/>
+            <field name="sequence">304</field>
+            <field name="appears_on_payslip">True</field>
+            <field name="condition_select">python</field>
+            <field name="condition_python">result = inputs.PQUI</field>
+            <field name="amount_select">code</field>
+            <field name="amount_python_compute">result = (inputs.PQUI.amount) * -1
+result_name = inputs.PQUI.name</field>
+            <field name="struct_id" ref="struct_id_base"/>
+        </record>
+
+        <record id="your_module_rule_multa" model="hr.salary.rule">
+            <field name="code">MLTA</field>
+            <field name="name">Multas</field>
+            <field name="category_id" ref="l10n_ec_hr_payroll.rule_cat_DESC"/>
+            <field name="sequence">304</field>
+            <field name="appears_on_payslip">True</field>
+            <field name="condition_select">python</field>
+            <field name="condition_python">result = inputs.PQUI</field>
+            <field name="amount_select">code</field>
+            <field name="amount_python_compute">result = (inputs.MLTA.amount) * -1
+result_name = inputs.MLTA.name</field>
+            <field name="struct_id" ref="struct_id_base"/>
+        </record>
+
+        <record id="your_module_rule_preship" model="hr.salary.rule">
+            <field name="code">PHIP</field>
+            <field name="name">Préstamos Hipotecarios</field>
+            <field name="category_id" ref="l10n_ec_hr_payroll.rule_cat_DESC"/>
+            <field name="sequence">305</field>
+            <field name="appears_on_payslip">True</field>
+            <field name="condition_select">python</field>
+            <field name="condition_python">result = inputs.PHIP</field>
+            <field name="amount_select">code</field>
+            <field name="amount_python_compute">result = (inputs.PHIP.amount) * -1
+result_name = inputs.PHIP.name</field>
+            <field name="struct_id" ref="struct_id_base"/>
+        </record>
+
+        <record id="your_module_rule_bonif" model="hr.salary.rule">
+            <field name="code">BONO</field>
+            <field name="name">Bonificaciones</field>
+            <field name="category_id" ref="l10n_ec_hr_payroll.rule_cat_APOR"/>
+            <field name="sequence">305</field>
+            <field name="appears_on_payslip">True</field>
+            <field name="condition_select">python</field>
+            <field name="condition_python">result = inputs.BONO</field>
+            <field name="amount_select">code</field>
+            <field name="amount_python_compute">result = (inputs.BONO.amount)
+result_name = inputs.BONO.name</field>
+            <field name="struct_id" ref="struct_id_base"/>
+        </record>
+
+        <record id="your_module_rule_penali" model="hr.salary.rule">
+            <field name="code">PENALI</field>
+            <field name="name">Pensión Alimenticia</field>
+            <field name="category_id" ref="l10n_ec_hr_payroll.rule_cat_DESC"/>
+            <field name="sequence">312</field>
+            <field name="appears_on_payslip">True</field>
+            <field name="condition_select">python</field>
+            <field name="condition_python">result = inputs.PENS</field>
+            <field name="amount_select">code</field>
+            <field name="amount_python_compute">result = (inputs.PENS.amount) * -1
+result_name = inputs.PENS.name</field>
+            <field name="struct_id" ref="struct_id_base"/>
+        </record>
+
+        <record id="your_module_rule_iessper" model="hr.salary.rule">
+            <field name="code">IESSPER</field>
+            <field name="name">Aporte IESS Personal</field>
+            <field name="category_id" ref="l10n_ec_hr_payroll.rule_cat_APTES"/>
+            <field name="sequence">900</field>
+            <field name="appears_on_payslip">True</field>
+            <field name="condition_select">none</field>
+            <field name="amount_select">code</field>
+            <field name="amount_python_compute">result = ((categories.APBL) * 9.45 / 100) * -1</field>
+            <field name="struct_id" ref="struct_id_base"/>
+        </record>
+
+        <record id="your_module_rule_iesspat" model="hr.salary.rule">
+            <field name="code">IESSPAT</field>
+            <field name="name">Aporte IESS Patronal</field>
+            <field name="category_id" ref="l10n_ec_hr_payroll.rule_cat_APTES"/>
+            <field name="sequence">901</field>
+            <field name="appears_on_payslip">False</field>
+            <field name="condition_select">none</field>
+            <field name="amount_select">code</field>
+            <field name="amount_python_compute">result = ((categories.APBL) * 12.15 / 100)* -1</field>
+            <field name="struct_id" ref="struct_id_base"/>
+        </record>  
+
+        <record id="your_module_rule_egresos" model="hr.salary.rule">
+            <field name="code">EGRESOS</field>
+            <field name="name">Total Egresos</field>
+            <field name="category_id" ref="hr_payroll.NET"/>
+            <field name="sequence">999</field>
+            <field name="appears_on_payslip">True</field>
+            <field name="condition_select">none</field>
+            <field name="amount_select">code</field>
+            <field name="amount_python_compute">result = categories.DESC + categories.DED + IESSPER</field>
+            <field name="struct_id" ref="struct_id_base"/>
+        </record>
+
+    </data>
+</odoo>

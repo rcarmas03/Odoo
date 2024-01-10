@@ -1,0 +1,1 @@
+from . import hr_payroll_structure, hr_payslip, hr_salary_rule, hr_salary_rule_category, hr_employee
